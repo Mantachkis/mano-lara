@@ -10003,9 +10003,24 @@ h3 {
   }
 }
 .card-header {
+  font-style: italic;
+}
+.card-header fieldset {
+  border: 1px solid black;
+  margin: 5px;
+  padding: 12px;
+  display: flex;
+}
+.card-header fieldset .block {
+  margin: 7px;
+}
+.card-header fieldset legend {
+  color: black;
+  font-size: 12px;
+  display: inline-block;
+  padding: 6px;
   text-align: center;
-  font-weight: bold;
-  font-size: large;
+  width: auto;
 }
 
 .list-block {

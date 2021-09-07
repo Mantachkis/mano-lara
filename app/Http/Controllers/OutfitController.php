@@ -16,17 +16,33 @@ class OutfitController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $outfits = Outfit::orderBy('color')->get();
-        $outfits = Outfit::all();
-        // if (isset($request) && $request->sort == 'color') {
-        //     $outfits = Outfit::orderBy('color')->get();
-        // }
-        // if (isset($request) && $request->sort == 'type') {
-        //     $outfits = Outfit::orderBy('type')->get();
-        // }
-        return view('outfit.index', ['outfits' => $outfits]);
+        //$masters = Master::orderBy('surname')->get();
+        if ($request->sort) {
+            if ('type' == $request->sort && 'asc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('type')->get();
+            } else if ('type' == $request->sort && 'desc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('type', 'desc')->get();
+            } else if ('color' == $request->sort && 'asc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('color')->get();
+            } else if ('color' == $request->sort && 'desc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('color', 'desc')->get();
+            } else if ('size' == $request->sort && 'asc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('size')->get();
+            } else if ('size' == $request->sort && 'desc' == $request->sort_dir) {
+                $outfits = Outfit::orderBy('size', 'desc')->get();
+            } else {
+                $outfits = Outfit::all();
+            }
+        } else {
+            $outfits = Outfit::all();
+        }
+
+        return view('outfit.index', [
+            'outfits' => $outfits,
+            'sortDirection' => $request->sort_dir ?? 'asc'
+        ]);
     }
 
     /**
@@ -148,14 +164,14 @@ class OutfitController extends Controller
             ->with('success_message', 'The outfit was deleted.');
     }
 
-    public function sort(Request $request)
-    {
-        if ($request->sort == 'color') {
-            $outfits = Outfit::orderBy('color')->get();
-        }
-        if ($request->sort == 'type') {
-            $outfits = Outfit::orderBy('type')->get();
-        }
-        return view('outfit.index', ['outfits' => $outfits]);
-    }
+    // public function sort(Request $request)
+    // {
+    //     if ($request->sort == 'color') {
+    //         $outfits = Outfit::orderBy('color')->get();
+    //     }
+    //     if ($request->sort == 'type') {
+    //         $outfits = Outfit::orderBy('type')->get();
+    //     }
+    //     return view('outfit.index', ['outfits' => $outfits]);
+    // }
 }
