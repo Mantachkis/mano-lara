@@ -18,8 +18,10 @@ class OutfitController extends Controller
      */
     public function index(Request $request)
     {
-        //$masters = Master::orderBy('surname')->get();
+
+        $masters = Master::orderBy('surname')->get();
         if ($request->sort) {
+            //sortina
             if ('type' == $request->sort && 'asc' == $request->sort_dir) {
                 $outfits = Outfit::orderBy('type')->get();
             } else if ('type' == $request->sort && 'desc' == $request->sort_dir) {
@@ -35,60 +37,25 @@ class OutfitController extends Controller
             } else {
                 $outfits = Outfit::all();
             }
+        } else if ($request->filter && 'master' == $request->filter) {
+            //filtruoja pagal master
+            $outfits = Outfit::where('master_id', $request->master_id)->get();
+        } else if ($request->search && 'all' == $request->search) {
+            //Paieska
+            $outfits = Outfit::where('color', 'like', '%' . $request->s . '%')->orWhere('type', 'like', '%' . $request->s . '%')->orWhere('size', 'like', '%' . $request->s . '%')->get();
         } else {
+            // nieko nesortinam
             $outfits = Outfit::all();
         }
 
+
         return view('outfit.index', [
             'outfits' => $outfits,
-            'sortDirection' => $request->sort_dir ?? 'asc'
+            'sortDirection' => $request->sort_dir ?? 'asc',
+            'masters' => $masters,
+            'master_id' => $request->master_id ?? '0',
+            's' => $request->s ?? ''
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // $masters = Master::all();
-        $masters = Master::orderBy('surname')->get();
-        return view('outfit.create', ['masters' => $masters]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'outfit_type' => ['required', 'min:3', 'max:50'],
-                'outfit_color' => ['required', 'min:3', 'max:20'],
-                'outfit_size' => ['required', 'integer', 'min:5', 'max:22'],
-                'outfit_about' => ['required'],
-                'master_id' => ['required', 'integer', 'min:1']
-            ]
-        );
-        if ($validator->fails()) {
-            $request->flash();
-            return redirect()->back()->withErrors($validator);
-        }
-        $outfit = new Outfit;
-        $outfit->type = $request->outfit_type;
-        $outfit->color = $request->outfit_color;
-        $outfit->size = $request->outfit_size;
-        $outfit->about = $request->outfit_about;
-        $outfit->master_id = $request->master_id;
-        $outfit->save();
-        return redirect()
-            ->route('outfit.index')
-            ->with('success_message', 'New outfit.');
     }
 
     /**

@@ -7,6 +7,9 @@
            <div class="card">
               <div class="card-header">
                    <h3>Outfits List</h3>
+
+
+                   
                    <form action="{{route('outfit.index')}}" method="get">
                     <fieldset>
                         <legend>Sort</legend>
@@ -37,11 +40,66 @@
                          
                             <a href="{{route('outfit.index')}}" class="btn btn-danger">Reset</a>
                         </div>
+                     </fieldset>
+                   </form>
+
+
+                        <form action="{{route('outfit.index')}}" method="get">
+                    <fieldset>
+                      <legend>Filter</legend>
+                      <div class="block">
+                      <div class="form-group">
+                        <select class="form-control" name="master_id">
+                          <option value="0" disabled selected>Select Master</option>
+                        @foreach ($masters as $master)
+                            <option value="{{$master->id}}" @if($master_id == $master->id) selected @endif>{{$master->name}} {{$master->surname}}</option>
+                        @endforeach
+                        </select>
+                        <small class="form-text text-muted">Select master from the list.</small>
+                    </div>
+                  </div>
+                    <div class="block">
+                      <button type="submit" class="btn btn-info" name="filter" value="master">Filter</button>
+                      <a href="{{route('outfit.index')}}" class="btn btn-warning">Reset</a>
+                  </div>
                     </fieldset>
                    </form>
 
+
+
+                     <form action="{{route('outfit.index')}}" method="get">
+                    <fieldset>
+                      <legend>Search</legend>
+                      <div class="block">
+                      <div class="form-group">
+                    <input class="form-control" type="text" placeholder="Search" name="s" value="{{$s}}">
+                        <small class="form-text text-muted">Search from fashion house.</small>
+                    </div>
+                  </div>
+                    <div class="block">
+                      <button type="submit" class="btn btn-info" name="search" value="all">Search</button>
+                      <a href="{{route('outfit.index')}}" class="btn btn-warning">Reset</a>
+                  </div>
+                    </fieldset>
+                   </form>
+
+
+
+                  
+</div>
+
+
+
+
+
+                  
+
+               
+                  
+
+
                <div class="card-body">
-            
+             
                 <ul class="list-group">
                 @foreach ($outfits as $outfit)
                 <li class="list-group-item">
@@ -52,12 +110,13 @@
                         </div>
                         <div class="list-block__buttons">
                             <a href="{{route('outfit.edit',[$outfit])}}"class="btn btn-success">Edit</a></a>
-                            <form method="POST" action="{{route('outfit.destroy', [$outfit])}}">
+                            <form  method="POST" action="{{route('outfit.destroy', [$outfit])}}">
                                 @csrf
                                 <button type="submit" class="btn btn-danger">Delete</button>
                                </form>
                         </div>
                     </div>
+                    
                 </li>
               @endforeach
                 </ul>
