@@ -57,7 +57,42 @@ class OutfitController extends Controller
             's' => $request->s ?? ''
         ]);
     }
+    public function create()
+    {
+        $masters = Master::all();
+        return view('outfit.create', ['masters' => $masters]);
+    }
+    public function store(Request $request)
+    {
 
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'outfit_type' => ['required', 'min:3', 'max:50'],
+                'outfit_color' => ['required', 'min:3', 'max:20'],
+                'outfit_size' => ['required', 'integer', 'min:5', 'max:22'],
+                'outfit_about' => ['required'],
+                'master_id' => ['required', 'integer', 'min:1']
+            ]
+        );
+
+        if ($validator->fails()) {
+            $request->flash();
+            return redirect()->back()->withErrors($validator);
+        }
+
+
+        $outfit = new Outfit;
+        $outfit->type = $request->outfit_type;
+        $outfit->color = $request->outfit_color;
+        $outfit->size = $request->outfit_size;
+        $outfit->about = $request->outfit_about;
+        $outfit->master_id = $request->master_id;
+        $outfit->save();
+        return redirect()
+            ->route('outfit.index')
+            ->with('success_message', 'New outfit.');
+    }
     /**
      * Display the specified resource.
      *
@@ -130,6 +165,9 @@ class OutfitController extends Controller
             ->route('outfit.index')
             ->with('success_message', 'The outfit was deleted.');
     }
+
+
+
 
     // public function sort(Request $request)
     // {
