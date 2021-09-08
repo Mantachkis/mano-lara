@@ -56,7 +56,7 @@ class MasterController extends Controller
         $master->save();
         return redirect()
             ->route('master.index')
-            ->with('success_message', 'New master has arrived.');
+            ->with('success_message', 'New master added.');
     }
 
     /**
@@ -120,12 +120,12 @@ class MasterController extends Controller
         if ($master->getOutfits->count()) {
             return redirect()
                 ->back()
-                ->with('info_message', 'Nop. You can`n do it');
+                ->with('info_message', 'Master is working on outfits.');
         }
 
         $master->delete();
         return redirect()
             ->route('master.index')
-            ->with('success_message', 'The master has gone.');
+            ->with('success_message', 'Deleted.');
     }
 }
